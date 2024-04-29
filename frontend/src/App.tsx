@@ -1,15 +1,15 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
 import "./App.css";
-import { useSocket } from "./hooks/socket";
+import { useWebSocketWithAuth } from "./features/websocket";
+import { useDispatch } from "react-redux";
+import { login } from "./features/authentication";
 
 function App() {
   const [count, setCount] = useState(0);
-  useSocket();
-  // useEffect(() => {
-  //   connectToSocketServer();
-  // }, []);
+  const dispatch = useDispatch();
+  useWebSocketWithAuth();
 
   return (
     <>
@@ -23,7 +23,19 @@ function App() {
       </div>
       <h1>Vite + React</h1>
       <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>count is {count}</button>
+        <button
+          onClick={() => {
+            dispatch(
+              login({
+                accessToken: "asdasdasd",
+                email: "asdasdasd",
+                id: "",
+              }),
+            );
+          }}
+        >
+          count is {count}
+        </button>
         <p>
           Edit <code>src/App.tsx</code> and save to test HMR
         </p>

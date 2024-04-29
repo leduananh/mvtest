@@ -9,9 +9,6 @@ const Layout: React.FC<LayoutRouteProps> = ({ children }) => {
         <Box display="flex" flexDirection="column" minHeight="100vh" >
             <Box component="header" bgcolor="primary.main" p={2} flex={0}>
                 <Header></Header>
-                {/* <Typography variant="h6" color="common.white">
-                    Header
-                </Typography> */}
             </Box>
             <Box flex={1} style={{ display: "flex" }}>
                 {/* <Container style={{ width: "100%", height: "100%" }}></Container> */}

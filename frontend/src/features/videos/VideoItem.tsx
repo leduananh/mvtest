@@ -9,22 +9,26 @@ interface VideoItemProps {
 }
 
 export const VideoItem: React.FC<VideoItemProps> = ({ videoId, title, sharedBy, description }) => {
-    // Generating the src URL with additional parameters for enhanced functionality and security
-    // https://youtu.be/1oMgxa32A7g?si=BijYqduJicAsXoOR
-    const videoSrc = `https://youtu.be/${videoId}?si=BijYqduJicAsXoORrel=0&modestbranding=1&autohide=1&showinfo=0&playsinline=1`;
+    // Correct the src URL for iframe embedding
+    const videoSrc = `https://www.youtube.com/embed/${videoId}`;
+
     return (
-        <Paper elevation={3} sx={{ display: 'flex', margin: 2, overflow: 'hidden' }}>
+        <Paper sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, margin: 2, overflow: 'hidden' }}>
             <Box
                 component="iframe"
                 src={videoSrc}
                 title="YouTube video player"
-                sx={{ width: 480, height: 270 }}
+                sx={{
+                    flex: { xs: '1', md: '0' },
+                    height: { xs: 180, md: 'auto' },
+                    width: { xs: '100%', md: 320 }
+                }}
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                 frameBorder="0"
                 referrerPolicy="strict-origin-when-cross-origin"
                 allowFullScreen
             />
-            <Box sx={{ padding: 2, flex: 1 }}>
+            <Box sx={{ padding: 2, flex: { xs: 'auto', md: 5 }, marginLeft: { xs: 0, md: 2 } }}>
                 <Typography variant="h6">{title}</Typography>
                 <Typography variant="subtitle1" color="text.secondary" sx={{ mb: 1 }}>
                     Shared by {sharedBy}

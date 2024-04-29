@@ -5,7 +5,9 @@ import { NotificationData } from "../../../services/websocket";
 import { commonHelper } from "../../../utils/commontHelper.ts";
 import _ from "lodash";
 
-const channelName = commonHelper.checkEnvVariableExist("VITE_SOCKET_NOTIFICATION_CHANNEL_NAME");
+const channelName = commonHelper.checkEnvVariableExist(
+  import.meta.env.VITE_SOCKET_NOTIFICATION_CHANNEL_NAME,
+);
 
 const wsNotiChannelInitialState: WSChannel = {
   channelName,

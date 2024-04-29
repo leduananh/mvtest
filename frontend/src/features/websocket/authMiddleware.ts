@@ -19,19 +19,20 @@ const webSocketMiddleware =
     switch (action.type) {
       case NOTI_SUBCRIPTION_ACTION_TYPE:
         const accessToken = store.getState().auth.userInfo.accessToken;
+
         const channelName = commonHelper.checkEnvVariableExist(
-          "VITE_SOCKET_NOTIFICATION_CHANNEL_NAME",
+          import.meta.env.VITE_SOCKET_NOTIFICATION_CHANNEL_NAME,
         );
-        const socketUrl = commonHelper.checkEnvVariableExist(
-          "VITE_SOCKET_BASE_URLVITE_SOCKET_BASE_URL",
-        );
+
+        const socketUrl = commonHelper.checkEnvVariableExist(import.meta.env.VITE_SOCKET_BASE_URL);
+
         const connectedCb = () => {
           commonHelper.wsInfoLog("Connected to notification channel");
           store.dispatch(notiSubscribed());
         };
 
         const receivedCb = (payload: NotificationData) => {
-          commonHelper.wsInfoLog("Received data notification channel: " + payload);
+          commonHelper.wsInfoLog("Received data notification channel: " + JSON.stringify(payload));
           store.dispatch(recievedNotiMsg(payload));
         };
 
@@ -50,7 +51,6 @@ const webSocketMiddleware =
           })
         ) {
           store.dispatch(connected());
-
           webSocketService.subscribeToChannel({
             channelName,
             connectedCb,

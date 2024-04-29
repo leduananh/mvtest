@@ -1,12 +1,11 @@
 import _ from "lodash"; // Import lodash library
-import logger from "../app/logger";
+import log from "../app/logger";
 import { LogPrefix } from "../constants/logging/format/logPrefix";
 import { logErrFormat } from "../constants/logging/format/template";
 
-const checkEnvVariableExist = (variableName: string): string => {
-  const envVariable = import.meta.env[variableName];
+const checkEnvVariableExist = (envVariable: string): string => {
   if (_.isNil(envVariable) || _.isEmpty(envVariable)) {
-    const errorMsg = `Missing ${variableName} environment variable`;
+    const errorMsg = `Missing ${envVariable} environment variable`;
     logError(errorMsg, LogPrefix.EnvVar);
     throw new Error(errorMsg);
   }
@@ -26,11 +25,11 @@ const wsErrorLog = (message: string): void => {
 };
 
 const logError = (message: string, logPrefix: LogPrefix): void => {
-  logger.error(logErrFormat({ message, prefix: `${logPrefix} ERROR` }));
+  log.error(logErrFormat({ message, prefix: `${logPrefix} ERROR` }));
 };
 
 const logInfo = (message: string, logPrefix: LogPrefix): void => {
-  logger.error(logErrFormat({ message, prefix: `${logPrefix} INFO` }));
+  log.info(logErrFormat({ message, prefix: `${logPrefix} INFO` }));
 };
 
 export const commonHelper = {

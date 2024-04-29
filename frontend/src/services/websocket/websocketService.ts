@@ -1,11 +1,11 @@
-import { createConsumer, Cable, Channel } from "actioncable";
+import { createConsumer, Consumer, Subscriptions } from "@rails/actioncable";
 import { ChannelSubscription, ChannelSubscriptionData } from "./types";
 import { commonHelper } from "../../utils/commontHelper";
 import _ from "lodash";
 
 class WebSocketService {
-  cable: Cable | null;
-  channelMap: Map<string, Channel>;
+  cable: Consumer | null;
+  channelMap: Map<string, Subscriptions>;
 
   constructor() {
     this.cable = null;
@@ -14,28 +14,32 @@ class WebSocketService {
 
   connect(channelSubscriptionData: ChannelSubscriptionData): boolean {
     try {
-      this.cable = createConsumer(
-        `${channelSubscriptionData.socketUrl}?userAgent=${channelSubscriptionData.userAgent}&token=${channelSubscriptionData.accessToken}&deviceFingerPrint=${channelSubscriptionData.deviceFingerPrint}`,
-      );
+      this.cable = createConsumer(`${channelSubscriptionData.socketUrl}`);
+
+      // `${channelSubscriptionData.socketUrl}?userAgent=${channelSubscriptionData.userAgent}&token=${channelSubscriptionData.accessToken}&deviceFingerPrint=${channelSubscriptionData.deviceFingerPrint}`,
+      // );
     } catch (err: Error | any) {
       commonHelper.wsErrorLog(err.message);
       return false;
     }
-    return _.isNil(this.cable);
+    return !_.isNull(this.cable) || !_.isUndefined(this.cable);
   }
 
   subscribeToChannel(channelSubscription: ChannelSubscription): boolean {
-    if (_.isNil(this.cable)) {
+    if (_.isNull(this.cable) || _.isUndefined(this.cable)) {
       commonHelper.wsErrorLog("Socket connection not establish yet!");
 
       return false;
     }
     try {
-      const channel: Channel = this.cable.subscriptions.create(channelSubscription.channelName, {
-        connected: channelSubscription.connectedCb,
-        disconnected: channelSubscription.disconnectedCb,
-        received: channelSubscription.receivedCb,
-      });
+      const channel: Subscriptions = this.cable.subscriptions.create(
+        channelSubscription.channelName,
+        {
+          connected: channelSubscription.connectedCb,
+          disconnected: channelSubscription.disconnectedCb,
+          received: channelSubscription.receivedCb,
+        },
+      );
 
       this.channelMap.set(channelSubscription.channelName, channel);
     } catch (err: Error | any) {

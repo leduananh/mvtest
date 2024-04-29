@@ -19,16 +19,16 @@ export const VideoItem: React.FC<VideoItemProps> = ({ videoId, title, sharedBy, 
                 src={videoSrc}
                 title="YouTube video player"
                 sx={{
-                    flex: { xs: '1', md: '0' },
-                    height: { xs: 180, md: 'auto' },
-                    width: { xs: '100%', md: 320 }
+                    flex: { xs: '1', md: '0', mb: 1 },
+                    height: { xs: 180, md: 'auto', mb: 1 },
+                    width: { xs: '100%', md: 320, mb: 1 }
                 }}
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                 frameBorder="0"
                 referrerPolicy="strict-origin-when-cross-origin"
                 allowFullScreen
             />
-            <Box sx={{ padding: 2, flex: { xs: 'auto', md: 5 }, marginLeft: { xs: 0, md: 2 } }}>
+            <Box sx={{ padding: 2, flex: { xs: 'auto', md: 5 }, marginLeft: { xs: 0, md: 2 }, overflowY: 'auto' }}>
                 <Typography variant="h6">{title}</Typography>
                 <Typography variant="subtitle1" color="text.secondary" sx={{ mb: 1 }}>
                     Shared by {sharedBy}
@@ -36,7 +36,9 @@ export const VideoItem: React.FC<VideoItemProps> = ({ videoId, title, sharedBy, 
                 <Typography variant="body2" color="text.secondary" sx={{ fontStyle: 'italic', mb: 1 }}>
                     Description
                 </Typography>
-                <Typography variant="body2">{description}</Typography>
+                <Typography variant="body2" sx={{ overflow: 'auto' }}>
+                    {description}
+                </Typography>
             </Box>
         </Paper>
     );

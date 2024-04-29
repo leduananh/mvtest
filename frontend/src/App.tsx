@@ -1,47 +1,29 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+
 import "./App.css";
 import { useWebSocketWithAuth } from "./features/websocket";
-import { useDispatch } from "react-redux";
-import { login } from "./features/authentication";
+import { ShareVideosPage } from './pages/ShareVideo';
+import { HomePage } from './pages/Home';
+
+const About: React.FC = () => <div>About</div>;
+const Contact: React.FC = () => <div>Contact</div>;
+const NotFound: React.FC = () => <div>404 Not Found</div>;
 
 function App() {
-  const [count, setCount] = useState(0);
-  const dispatch = useDispatch();
   useWebSocketWithAuth();
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button
-          onClick={() => {
-            dispatch(
-              login({
-                accessToken: "asdasdasd",
-                email: "asdasdasd",
-                id: "",
-              }),
-            );
-          }}
-        >
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">Click on the Vite and React logos to learn more</p>
-    </>
+    <Router>
+      <Routes>
+        {/* Define your routes */}
+
+        <Route path="/" element={<HomePage />} />
+        <Route path="/share-youtube" element={<ShareVideosPage />} />
+        <Route path="/contact" element={<Contact />} />
+        {/* Handle 404 routes */}
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </Router>
   );
 }
 

@@ -107,15 +107,17 @@ export const HeaderLoginForm: React.FC<{}> = () => {
     [location],
   );
 
+  const onSubmit = useCallback(async () => {
+    // TODO update call api
+    console.log("asdasdasdasd");
+  }, []);
+
   return (
     <FormBase
       createFormJsxFieldCb={createJsxCb}
       initialFieldValues={initData}
       validationSchema={validationSchema}
-      onSubmit={async () => {
-        // TODO update call api
-        console.log("asdasdasdasd");
-      }}
+      onSubmit={onSubmit}
       style={{ display: "flex", gap: 2, alignItems: "center" }}
     />
   );

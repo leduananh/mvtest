@@ -1,6 +1,6 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useMemo } from "react";
 import { Button, TextField } from "@mui/material";
-import { Field, FormikState, FormikValues } from "formik";
+import { Field, FormikValues, FormikProps } from "formik";
 import * as Yup from "yup";
 import { useNavigateLink } from "../../shared/hooks";
 import { ShareVideosBtn } from "../videos";
@@ -11,35 +11,32 @@ import {
   FormBaseFields,
   FormFieldRenderFunction,
 } from "../../shared/components/FormBase";
+import _ from "lodash";
 
 interface HeaderLoginForm extends FormBaseFields {
   email: string;
   password: string;
 }
 
-const validationSchema = Yup.object({
-  email: Yup.string().email("Invalid email address").required("Required"),
-  password: Yup.string().required("Required").max(3),
-});
-
-const initData: HeaderLoginForm = { email: "", password: "" };
-
-export const HeaderLoginForm: React.FC<{}> = () => {
+const HeaderLoginForm: React.FC<{}> = () => {
   const navigate = useNavigateLink();
   const location = useLocation();
 
   const createJsxCb: FormFieldRenderFunction = useCallback(
-    (formikState: FormikState<FormikValues>) => {
-      const isLoginPage = location.pathname === config.ROUTES.LOGIN;
-      const isSignUpPage = location.pathname === config.ROUTES.REGISTER;
+    (formikState: FormikProps<FormikValues>) => {
+      const shareVideosBtn = useMemo(() => <ShareVideosBtn />, []);
 
-      const fields = Object.keys(formikState.values);
-      const isAllFieldFullFill = fields.every(
-        (field) => formikState.touched[field] && !!formikState.values[field],
+      const loginBtn = useMemo(
+        () => (
+          <Button variant="contained" type="submit">
+            {"Login"}
+          </Button>
+        ),
+        [formikState],
       );
 
-      return (
-        <>
+      const emailField = useMemo(
+        () => (
           <Field
             as={TextField}
             type="email"
@@ -50,8 +47,30 @@ export const HeaderLoginForm: React.FC<{}> = () => {
             fullWidth
             required
             sx={{ mb: 4 }}
+            style={{
+              margin: "auto",
+            }}
+            error={!_.isEmpty(formikState.errors.email)}
           />
+        ),
+        [formikState],
+      );
 
+      const signUpBtn = useMemo(
+        () => (
+          <Button
+            variant="contained"
+            onClick={() => {
+              navigate(config.ROUTES.REGISTER);
+            }}
+          >
+            {"Sign Up"}
+          </Button>
+        ),
+        [formikState],
+      );
+      const passwordField = useMemo(
+        () => (
           <Field
             as={TextField}
             type="password"
@@ -62,45 +81,34 @@ export const HeaderLoginForm: React.FC<{}> = () => {
             fullWidth
             required
             sx={{ mb: 4 }}
+            style={{
+              margin: "auto",
+            }}
+            error={!_.isEmpty(formikState.errors.password)}
           />
+        ),
+        [],
+      );
+      const isLoginPage = location.pathname === config.ROUTES.LOGIN;
+      const isSignUpPage = location.pathname === config.ROUTES.REGISTER;
+      const fields = Object.keys(formikState.values);
+      const isAllFieldFullFill = fields.every(
+        (field) => formikState.touched[field] && !!formikState.values[field],
+      );
 
-          <ShareVideosBtn />
+      return (
+        <>
+          {emailField}
+          {passwordField}
+          {shareVideosBtn}
 
-          {isLoginPage && !isSignUpPage && (
-            <Button
-              variant="contained"
-              onClick={() => {
-                navigate(config.ROUTES.REGISTER);
-              }}
-            >
-              {"Sign Up"}
-            </Button>
-          )}
+          {isLoginPage && !isSignUpPage && signUpBtn}
 
-          {isSignUpPage && !isLoginPage && (
-            <Button variant="contained" disabled={formikState.isSubmitting} type="submit">
-              {"Login"}
-            </Button>
-          )}
+          {isSignUpPage && !isLoginPage && loginBtn}
 
-          {!isSignUpPage && !isLoginPage && !isAllFieldFullFill ? (
-            <Button
-              variant="contained"
-              onClick={() => {
-                navigate(config.ROUTES.REGISTER);
-              }}
-            >
-              {"Sign Up"}
-            </Button>
-          ) : (
-            !isSignUpPage &&
-            !isLoginPage &&
-            isAllFieldFullFill && (
-              <Button variant="contained" disabled={formikState.isSubmitting} type="submit">
-                {"Login"}
-              </Button>
-            )
-          )}
+          {!isSignUpPage && !isLoginPage && !isAllFieldFullFill
+            ? signUpBtn
+            : !isSignUpPage && !isLoginPage && isAllFieldFullFill && loginBtn}
         </>
       );
     },
@@ -115,10 +123,10 @@ export const HeaderLoginForm: React.FC<{}> = () => {
   return (
     <FormBase
       createFormJsxFieldCb={createJsxCb}
-      initialFieldValues={initData}
-      validationSchema={validationSchema}
+      initialFieldValues={config.RULES.FORM.HEADER_LOGIN.initValues}
+      validationSchema={config.RULES.FORM.HEADER_LOGIN.constrains}
       onSubmit={onSubmit}
-      style={{ display: "flex", gap: 2, alignItems: "center" }}
+      style={{ display: "flex", gap: 10, alignItems: "center" }}
     />
   );
 };

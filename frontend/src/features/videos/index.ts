@@ -1,5 +1,5 @@
 import { VideoItem } from "./videoItem";
-import { VideoShareForm } from "./shareVideosForm";
+import VideoShareForm from "./shareVideosForm";
 import { ShareVideosBtn } from "./shareVideosBtn";
 import { VideoItemList } from "./videoItemList";
 

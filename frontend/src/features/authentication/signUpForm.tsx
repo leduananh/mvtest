@@ -1,6 +1,6 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useMemo } from "react";
 import { Button, Container, TextField, Typography } from "@mui/material";
-import { Field, FormikState, FormikValues } from "formik";
+import { Field, FormikProps, FormikValues } from "formik";
 import * as Yup from "yup";
 import { Link } from "react-router-dom";
 import { useAlert } from "../../shared/hooks";
@@ -26,13 +26,13 @@ const validationSchema = Yup.object({
 
 const initData: SignUpForm = { email: "", password: "", confirmPassword: "" };
 
-export const SignUpForm: React.FC<{}> = () => {
+const SignUpForm: React.FC<{}> = () => {
   const { showAlert } = useAlert();
 
   const createJsxCb: FormFieldRenderFunction = useCallback(
-    (formikState: FormikState<FormikValues>) => {
-      return (
-        <>
+    (formikState: FormikProps<FormikValues>) => {
+      const emailField = useMemo(
+        () => (
           <Field
             as={TextField}
             type="email"
@@ -46,7 +46,12 @@ export const SignUpForm: React.FC<{}> = () => {
             error={formikState.touched.email && Boolean(formikState.errors.email)}
             sx={{ mb: 4 }}
           />
+        ),
+        [formikState],
+      );
 
+      const passwordField = useMemo(
+        () => (
           <Field
             as={TextField}
             type="password"
@@ -60,7 +65,26 @@ export const SignUpForm: React.FC<{}> = () => {
             error={formikState.touched.password && Boolean(formikState.errors.password)}
             sx={{ mb: 4 }}
           />
+        ),
+        [formikState],
+      );
 
+      const submitBtn = useMemo(
+        () => (
+          <Button
+            variant="outlined"
+            color="secondary"
+            type="submit"
+            disabled={formikState.isSubmitting}
+          >
+            Register
+          </Button>
+        ),
+        [formikState],
+      );
+
+      const confirmPasswordField = useMemo(
+        () => (
           <Field
             as={TextField}
             type="password"
@@ -76,15 +100,16 @@ export const SignUpForm: React.FC<{}> = () => {
             }
             sx={{ mb: 4 }}
           />
+        ),
+        [formikState],
+      );
 
-          <Button
-            variant="outlined"
-            color="secondary"
-            type="submit"
-            disabled={formikState.isSubmitting}
-          >
-            Register
-          </Button>
+      return (
+        <>
+          {emailField}
+          {passwordField}
+          {confirmPasswordField}
+          {submitBtn}
         </>
       );
     },
@@ -113,3 +138,5 @@ export const SignUpForm: React.FC<{}> = () => {
     </Container>
   );
 };
+
+export default SignUpForm;

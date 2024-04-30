@@ -13,12 +13,12 @@ interface ShareVideosBtnProps {
 export const ShareVideosBtn: React.FC<ShareVideosBtnProps> = ({
   text = "share a video",
   toLink = config.ROUTES.VIDEO_SHARE,
-  style = { padding: 5 },
+  style = {},
 }) => {
   return (
     <Link to={toLink}>
       <Button style={style}>
-        <Typography>{text}</Typography>
+        <Typography style={{ textWrap: "nowrap" }}>{text}</Typography>
       </Button>
     </Link>
   );

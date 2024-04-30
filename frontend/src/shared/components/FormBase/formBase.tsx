@@ -1,5 +1,5 @@
 import React, { CSSProperties } from "react";
-import { Formik, Form, FormikHelpers, FormikState, FormikValues } from "formik";
+import { Formik, Form, FormikHelpers, FormikProps, FormikValues } from "formik";
 import * as Yup from "yup";
 
 import _ from "lodash";
@@ -9,7 +9,7 @@ import { OverLayLoading } from "../OverLayLoading";
 export interface FormBaseFields {}
 
 export type FormFieldRenderFunction = (
-  formikState: FormikState<FormikValues>,
+  formikState: FormikProps<FormikValues>,
   helpers?: FormikHelpers<FormikValues>,
 ) => JSX.Element;
 

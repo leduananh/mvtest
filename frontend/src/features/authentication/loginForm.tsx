@@ -1,6 +1,6 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useMemo } from "react";
 import { Button, Container, TextField, Typography } from "@mui/material";
-import { Field, FormikState, FormikValues } from "formik";
+import { Field, FormikProps, FormikValues } from "formik";
 import * as Yup from "yup";
 import { Link } from "react-router-dom";
 import { useAlert } from "../../shared/hooks";
@@ -17,23 +17,13 @@ interface LoginForm extends FormBaseFields {
   confirmPassword: string;
 }
 
-const validationSchema = Yup.object({
-  email: Yup.string().email("Invalid email address").required("Required"),
-  password: Yup.string().required("Password is required"),
-  confirmPassword: Yup.string()
-    .oneOf([Yup.ref("password")], "Passwords must match")
-    .required("Confirm Password is required"),
-});
-
-const initData: LoginForm = { email: "", password: "", confirmPassword: "" };
-
 const LoginForm: React.FC<{}> = () => {
   const { showAlert } = useAlert();
 
   const createJsxCb: FormFieldRenderFunction = useCallback(
-    (formikState: FormikState<FormikValues>) => {
-      return (
-        <>
+    (formikState: FormikProps<FormikValues>) => {
+      const emailField = useMemo(
+        () => (
           <Field
             as={TextField}
             type="email"
@@ -47,7 +37,12 @@ const LoginForm: React.FC<{}> = () => {
             error={formikState.touched.email && Boolean(formikState.errors.email)}
             sx={{ mb: 4 }}
           />
+        ),
+        [formikState],
+      );
 
+      const passwordField = useMemo(
+        () => (
           <Field
             as={TextField}
             type="password"
@@ -61,7 +56,12 @@ const LoginForm: React.FC<{}> = () => {
             error={formikState.touched.password && Boolean(formikState.errors.password)}
             sx={{ mb: 4 }}
           />
+        ),
+        [formikState],
+      );
 
+      const confirmPasswordField = useMemo(
+        () => (
           <Field
             as={TextField}
             type="password"
@@ -77,7 +77,12 @@ const LoginForm: React.FC<{}> = () => {
             }
             sx={{ mb: 4 }}
           />
+        ),
+        [formikState],
+      );
 
+      const submitBtn = useMemo(
+        () => (
           <Button
             variant="outlined"
             color="secondary"
@@ -86,6 +91,15 @@ const LoginForm: React.FC<{}> = () => {
           >
             {"Login"}
           </Button>
+        ),
+        [formikState],
+      );
+      return (
+        <>
+          {emailField}
+          {passwordField}
+          {confirmPasswordField}
+          {submitBtn}
         </>
       );
     },
@@ -103,10 +117,10 @@ const LoginForm: React.FC<{}> = () => {
         Login Form
       </Typography>
       <FormBase
-        initialFieldValues={initData}
+        initialFieldValues={config.RULES.FORM.LOGIN.initValues}
         onSubmit={onSubmit}
         createFormJsxFieldCb={createJsxCb}
-        validationSchema={validationSchema}
+        validationSchema={config.RULES.FORM.LOGIN.constrains}
       />
       <Typography variant="body2">
         Don't had account yet? <Link to={config.ROUTES.REGISTER}>Sign up here!</Link>

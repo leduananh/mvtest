@@ -1,7 +1,6 @@
 import React from "react";
 import {
   Box,
-  TextField,
   Button,
   useMediaQuery,
   useTheme,
@@ -13,7 +12,6 @@ import {
   ListItemText,
   Divider,
 } from "@mui/material";
-import { ShareVideosBtn } from "../../../features/videos";
 import { useNavigateLink } from "../../hooks/useNavigateLink";
 import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
 import { useSelector } from "react-redux";
@@ -22,9 +20,9 @@ import LoginIcon from "@mui/icons-material/Login";
 import AppRegistrationIcon from "@mui/icons-material/AppRegistration";
 import HomeIcon from "@mui/icons-material/Home";
 import LogoutIcon from "@mui/icons-material/Logout";
-import { HeaderLoginForm } from "../../../features/authentication/headerLoginForm";
 import { Link } from "react-router-dom";
 import config from "../../../app/config";
+import { HeaderLoginForm } from "../../../features/authentication";
 
 const Header: React.FC = () => {
   const [open, setOpen] = React.useState(false);
@@ -46,7 +44,7 @@ const Header: React.FC = () => {
           <ListItem key={"Home"} disablePadding>
             <ListItemButton
               onClick={() => {
-                navigate("/");
+                navigate(config.ROUTES.HOME);
               }}
             >
               <ListItemIcon>
@@ -65,7 +63,7 @@ const Header: React.FC = () => {
           <ListItem key={"login"} disablePadding>
             <ListItemButton
               onClick={() => {
-                navigate("/");
+                navigate(config.ROUTES.LOGIN);
               }}
             >
               <ListItemIcon>
@@ -82,7 +80,7 @@ const Header: React.FC = () => {
           <ListItem key={"signUp"} disablePadding>
             <ListItemButton
               onClick={() => {
-                navigate("/sign-up");
+                navigate(config.ROUTES.REGISTER);
               }}
             >
               <ListItemIcon>
@@ -99,7 +97,7 @@ const Header: React.FC = () => {
           <ListItem key={"signUp"} disablePadding>
             <ListItemButton
               onClick={() => {
-                navigate("/sign-up");
+                navigate(config.ROUTES.REGISTER);
               }}
             >
               <ListItemIcon>

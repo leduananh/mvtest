@@ -1,6 +1,7 @@
 import React, { CSSProperties, ReactNode } from "react";
 import { Button, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
+import config from "../../app/config";
 
 interface ShareVideosBtnProps {
   style?: CSSProperties;
@@ -11,7 +12,7 @@ interface ShareVideosBtnProps {
 
 export const ShareVideosBtn: React.FC<ShareVideosBtnProps> = ({
   text = "share a video",
-  toLink = "/share-youtube",
+  toLink = config.ROUTES.VIDEO_SHARE,
   style = { padding: 5 },
 }) => {
   return (

@@ -4,7 +4,7 @@ import { RootState } from "../../app/store.ts";
 import { NOTI_SUBCRIPTION_ACTION_TYPE, WEBSOCKET_DISCONNECT_ACTION_TYPE } from "./action.ts";
 import { webSocketService } from "../../services/websocket/websocketService.ts";
 import { connected, disconnected, setError } from "./websocketSlice.ts";
-import { commonHelper } from "../../utils/commontHelper.ts";
+import { commonHelper } from "../../utils/commonHelper.ts";
 import { NotificationData } from "../../services/websocket/types.ts";
 import {
   notiDisconnected,

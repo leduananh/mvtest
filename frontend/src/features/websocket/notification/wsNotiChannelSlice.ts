@@ -2,7 +2,7 @@ import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { WSChannel } from "./types.ts";
 import { SliceNames } from "../../../app/sliceNames";
 import { NotificationData } from "../../../services/websocket";
-import { commonHelper } from "../../../utils/commontHelper.ts";
+import { commonHelper } from "../../../utils/commonHelper.ts";
 import _ from "lodash";
 
 const channelName = commonHelper.checkEnvVariableExist(

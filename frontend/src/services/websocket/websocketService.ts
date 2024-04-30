@@ -1,6 +1,6 @@
 import { createConsumer, Consumer, Subscriptions } from "@rails/actioncable";
 import { ChannelSubscription, ChannelSubscriptionData } from "./types";
-import { commonHelper } from "../../utils/commontHelper";
+import { commonHelper } from "../../utils/commonHelper";
 import _ from "lodash";
 
 class WebSocketService {

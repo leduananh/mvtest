@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../app/store";
 import { NOTI_SUBCRIPTION_ACTION_TYPE, WEBSOCKET_DISCONNECT_ACTION_TYPE } from "./action";
-import { commonHelper } from "../../utils/commontHelper";
+import { commonHelper } from "../../utils/commonHelper";
 
 function useWebSocketWithAuth() {
   const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn);

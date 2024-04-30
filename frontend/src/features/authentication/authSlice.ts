@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AuthState, LoggedUserInfo } from "./types";
 import { SliceNames } from "../../app/sliceNames";
-import { commonHelper } from "../../utils/commontHelper";
+import { commonHelper } from "../../utils/commonHelper";
 
 const authInitialState: AuthState = {
   isLoggedIn: false,

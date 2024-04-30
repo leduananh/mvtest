@@ -1,56 +1,64 @@
-import React, { ReactNode } from "react";
-import { Formik, Form } from "formik";
+import React, { CSSProperties } from "react";
+import { Formik, Form, FormikHelpers, FormikState, FormikValues } from "formik";
 import * as Yup from "yup";
 
 import _ from "lodash";
 import { AlertType, useAlert, useFormikSubmit } from "../../hooks";
 import { OverLayLoading } from "../OverLayLoading";
 
-export interface FormBaseFields { }
+export interface FormBaseFields {}
+
+export type FormFieldRenderFunction = (
+  formikState: FormikState<FormikValues>,
+  helpers?: FormikHelpers<FormikValues>,
+) => JSX.Element;
 
 export interface FormBaseComponent {
-    onSubmit: (data: FormBaseFields) => Promise<void>;
-    validationSchema: Yup.ObjectSchema<FormBaseFields>;
-    initialFieldValues: FormBaseFields;
-    children: ReactNode[];
+  onSubmit: (data: FormBaseFields) => Promise<void>;
+  validationSchema: Yup.ObjectSchema<FormBaseFields>;
+  initialFieldValues: FormBaseFields;
+  createFormJsxFieldCb: FormFieldRenderFunction;
+  style?: CSSProperties;
 }
 
 export const FormBase: React.FC<FormBaseComponent> = ({
-    onSubmit,
-    validationSchema,
-    initialFieldValues,
-    children,
+  onSubmit,
+  validationSchema,
+  initialFieldValues,
+  createFormJsxFieldCb,
+  style = {},
 }) => {
-    const { showAlert } = useAlert();
+  const { showAlert } = useAlert();
 
-    const { handleSubmit, isLoading } = useFormikSubmit<FormBaseFields>({
-        onSubmit: onSubmit,
-        validationSchema: validationSchema,
-    });
+  const { handleSubmit, isLoading } = useFormikSubmit<FormBaseFields>({
+    onSubmit: onSubmit,
+    validationSchema: validationSchema,
+  });
 
-    return (
-        <>
-            <OverLayLoading open={isLoading} />
-            <Formik
-                initialValues={initialFieldValues}
-                validationSchema={validationSchema}
-                onSubmit={handleSubmit}
-            >
-                {({ isSubmitting, errors, isValid, isValidating }) => {
-                    if (isSubmitting) {
-                        if (!isValid && isValidating) {
-                            Object.entries(errors).forEach(([k, v]: [string, unknown]) => {
-                                if (!_.isNil(v) && _.isString(v) && !_.isEmpty(v)) {
-                                    showAlert(v, { type: AlertType.Error });
-                                }
-                            });
-                        }
-                    }
-                    return <Form>{...children}</Form>;
-                }}
-            </Formik>
-        </>
-    );
+  return (
+    <>
+      <OverLayLoading open={isLoading} />
+      <Formik
+        initialValues={initialFieldValues}
+        validationSchema={validationSchema}
+        onSubmit={handleSubmit}
+      >
+        {(formikState) => {
+          const jsx = createFormJsxFieldCb(formikState);
+          if (formikState.isSubmitting) {
+            if (!formikState.isValid && formikState.isValidating) {
+              Object.entries(formikState.errors).forEach(([k, v]: [string, unknown]) => {
+                if (!_.isNil(v) && _.isString(v) && !_.isEmpty(v)) {
+                  showAlert(v, { type: AlertType.Error });
+                }
+              });
+            }
+          }
+          return <Form style={style}>{jsx}</Form>;
+        }}
+      </Formik>
+    </>
+  );
 };
 
 export default FormBase;

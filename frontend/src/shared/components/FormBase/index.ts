@@ -1,4 +1,4 @@
-import FormBase, { FormBaseFields } from "./formBase";
+import FormBase, { FormBaseFields, FormFieldRenderFunction } from "./formBase";
 
-export { FormBase }
-export type { FormBaseFields }
+export { FormBase };
+export type { FormBaseFields, FormFieldRenderFunction };

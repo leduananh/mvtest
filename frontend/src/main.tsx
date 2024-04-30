@@ -16,11 +16,11 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
     <Provider store={store}>
       <ThemeProvider theme={theme}>
         <CssBaseline enableColorScheme />
-        <Layout>
-          <SnackbarProvider maxSnack={3} anchorOrigin={config.ALERT.ANCHOR}>
+        <SnackbarProvider maxSnack={3} anchorOrigin={config.ALERT.ANCHOR}>
+          <Layout>
             <App />
-          </SnackbarProvider>
-        </Layout>
+          </Layout>
+        </SnackbarProvider>
       </ThemeProvider>
     </Provider>
   </BrowserRouter>,

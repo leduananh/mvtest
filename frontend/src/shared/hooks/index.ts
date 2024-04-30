@@ -1,5 +1,5 @@
-import useAlert from "./useAlert";
+import useAlert, { AlertType } from "./useAlert";
 import useFormikSubmit from "./useFormikSubmit";
 import { useNavigateLink } from "./useNavigateLink";
 
-export { useFormikSubmit, useNavigateLink, useAlert };
+export { useFormikSubmit, useNavigateLink, useAlert, AlertType };

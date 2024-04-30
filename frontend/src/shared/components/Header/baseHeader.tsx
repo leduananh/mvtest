@@ -22,11 +22,11 @@ import LoginIcon from "@mui/icons-material/Login";
 import AppRegistrationIcon from "@mui/icons-material/AppRegistration";
 import HomeIcon from "@mui/icons-material/Home";
 import LogoutIcon from "@mui/icons-material/Logout";
-import { useLoginForm } from "../../../features/authentication";
+import { HeaderLoginForm } from "../../../features/authentication/headerLoginForm";
+import { Link } from "react-router-dom";
+import config from "../../../app/config";
 
 const Header: React.FC = () => {
-  const { username, password, setUsername, setPassword, handleLoginSubmit, isFormValid } =
-    useLoginForm();
   const [open, setOpen] = React.useState(false);
 
   const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn);
@@ -122,56 +122,28 @@ const Header: React.FC = () => {
       </Drawer>
       {isTablet ? (
         <>
-          <img
-            src={"https://upload.wikimedia.org/wikipedia/commons/0/04/Funny_movie_logo.png"}
-            alt="Logo"
-            style={{ width: "auto", height: "50px" }}
-          />
+          <Link to={config.ROUTES.HOME}>
+            <img
+              src={"https://upload.wikimedia.org/wikipedia/commons/0/04/Funny_movie_logo.png"}
+              alt="Logo"
+              style={{ width: "auto", height: "50px" }}
+            />
+          </Link>
           <Button onClick={toggleDrawer(true)}>
             <MenuRoundedIcon></MenuRoundedIcon>
           </Button>
         </>
       ) : (
         <>
-          <img
-            src={"https://upload.wikimedia.org/wikipedia/commons/0/04/Funny_movie_logo.png"}
-            alt="Logo"
-            style={{ width: "auto", height: "50px" }}
-          />
-
-          <Box display="flex" gap={2} alignItems="center">
-            <TextField
-              label="Username"
-              variant="outlined"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              required
+          <Link to={config.ROUTES.HOME}>
+            <img
+              src={"https://upload.wikimedia.org/wikipedia/commons/0/04/Funny_movie_logo.png"}
+              alt="Logo"
+              style={{ width: "auto", height: "50px" }}
             />
+          </Link>
 
-            <TextField
-              label="Password"
-              variant="outlined"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-
-            <ShareVideosBtn />
-
-            <Button
-              variant="contained"
-              onClick={() => {
-                if (isFormValid) {
-                  navigate("/");
-                } else {
-                  navigate("/sign-up");
-                }
-              }}
-            >
-              {isFormValid ? "Login" : "Sign Up"}
-            </Button>
-          </Box>
+          <HeaderLoginForm />
         </>
       )}
     </Box>

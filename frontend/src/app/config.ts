@@ -18,7 +18,7 @@ const config: AppConfig = {
   ROUTES: {
     HOME: "/",
     LOGIN: "/login",
-    REGISTER: "/signup",
+    REGISTER: "/sign-up",
     VIDEO_SHARE: "/video-share",
   },
   ALERT: {

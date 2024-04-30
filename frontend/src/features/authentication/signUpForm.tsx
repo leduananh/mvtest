@@ -21,7 +21,7 @@ const validationSchema = Yup.object({
 });
 
 export const SignUpForm: React.FC<{}> = () => {
-  const { showAlert } = useAlert()
+  const { showAlert } = useAlert();
 
   const { handleSubmit, isLoading } = useFormikSubmit<SignUpForm>({
     onSubmit: async () => {

@@ -3,9 +3,8 @@ import { Button, Container, TextField, Typography } from "@mui/material";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import { Link } from "react-router-dom";
-import { useFormikSubmit } from "../../shared/hooks";
+import { useAlert, useFormikSubmit } from "../../shared/hooks";
 import { OverLayLoading } from "../../shared/components/OverLayLoading";
-import { useSnackbar } from "notistack";
 
 interface SignUpForm {
   email: string;
@@ -22,11 +21,11 @@ const validationSchema = Yup.object({
 });
 
 export const SignUpForm: React.FC<{}> = () => {
-  const { enqueueSnackbar } = useSnackbar();
+  const { showAlert } = useAlert()
 
   const { handleSubmit, isLoading } = useFormikSubmit<SignUpForm>({
     onSubmit: async () => {
-      enqueueSnackbar("asdasdasdasd", { variant: "success", autoHideDuration: 1500 });
+      showAlert("asdasdasdasd");
     },
     validationSchema: validationSchema,
   });

@@ -1,25 +1,27 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback, useEffect, useMemo } from "react";
 import { Button, Container, TextField, Typography } from "@mui/material";
 import { Field, FormikProps, FormikValues } from "formik";
-import * as Yup from "yup";
 import { Link } from "react-router-dom";
-import { useAlert } from "../../shared/hooks";
-import {
-  FormBase,
-  FormBaseFields,
-  FormFieldRenderFunction,
-} from "../../shared/components/FormBase";
+import { AlertType, useAlert, useNavigateLink } from "../../shared/hooks";
+import { FormBase, FormFieldRenderFunction } from "../../shared/components/FormBase";
 import config from "../../app/config";
+import useLogin from "./useLogin";
+import { useDispatch, useSelector } from "react-redux";
+import { LoggedUserInfo, loginAction, selectAuthState } from ".";
+import _ from "lodash";
 
-interface LoginForm extends FormBaseFields {
+interface LoginForm {
   email: string;
   password: string;
-  confirmPassword: string;
 }
 
 const LoginForm: React.FC<{}> = () => {
+  const dispatch = useDispatch();
+  const { sendLoginRequest, apiError, loginResponse, LoginResponseToLoginActionPayLoadFn } = useLogin();
   const { showAlert } = useAlert();
-
+  const { isLoggedIn } = useSelector(selectAuthState)
+  const navigate = useNavigateLink()
+  
   const createJsxCb: FormFieldRenderFunction = useCallback(
     (formikState: FormikProps<FormikValues>) => {
       const emailField = useMemo(
@@ -60,27 +62,6 @@ const LoginForm: React.FC<{}> = () => {
         [formikState],
       );
 
-      const confirmPasswordField = useMemo(
-        () => (
-          <Field
-            as={TextField}
-            type="password"
-            variant="outlined"
-            color="secondary"
-            label="Confirm Password"
-            name="confirmPassword"
-            fullWidth
-            required
-            helperText={formikState.touched.confirmPassword && formikState.errors.confirmPassword}
-            error={
-              formikState.touched.confirmPassword && Boolean(formikState.errors.confirmPassword)
-            }
-            sx={{ mb: 4 }}
-          />
-        ),
-        [formikState],
-      );
-
       const submitBtn = useMemo(
         () => (
           <Button
@@ -98,7 +79,6 @@ const LoginForm: React.FC<{}> = () => {
         <>
           {emailField}
           {passwordField}
-          {confirmPasswordField}
           {submitBtn}
         </>
       );
@@ -106,10 +86,29 @@ const LoginForm: React.FC<{}> = () => {
     [],
   );
 
-  const onSubmit = useCallback(async () => {
-    // TODO update call api
-    showAlert("asdasdasdasd");
+  const onSubmit = useCallback(async (payload: LoginForm) => {
+    await sendLoginRequest(payload);
   }, []);
+
+  useEffect(() => {
+    if (!_.isNil(apiError)) {
+      showAlert(apiError.message, { type: AlertType.Error });
+    }
+  }, [apiError]);
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      navigate(config.ROUTES.HOME)
+    }
+  }, [isLoggedIn]);
+
+  useEffect(() => {
+    if (!_.isNil(loginResponse)) {
+      const loginActionPayload: LoggedUserInfo = LoginResponseToLoginActionPayLoadFn(loginResponse)
+      showAlert('Login success')
+      dispatch(loginAction(loginActionPayload));
+    }
+  }, [loginResponse]);
 
   return (
     <Container maxWidth="sm">

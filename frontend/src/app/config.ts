@@ -4,7 +4,18 @@ import { HeaderLoginForm, LoginForm, SignUpForm } from "../features/authenticati
 import { VideoShareForm } from "../features/videos";
 
 export interface AppConfig {
-  API_BASE_URL: string;
+  CLIENT: {
+    BASE_URL: string;
+    TIMEOUT: number;
+    RESOURCE: {
+      USER: {
+        PATH: {
+          plural: string;
+          singular: string;
+        };
+      };
+    };
+  };
   ROUTES: {
     HOME: string;
     LOGIN: string;
@@ -37,7 +48,18 @@ export interface AppConfig {
 }
 
 const config: AppConfig = {
-  API_BASE_URL: "https://api.mockfly.dev/mocks/18c35e0a-722f-45b4-a39b-3ce07a02b646",
+  CLIENT: {
+    BASE_URL: "http://127.0.0.1:3658/m1/525412-485933-default/api/v1",
+    TIMEOUT: 10000,
+    RESOURCE: {
+      USER: {
+        PATH: {
+          plural: "/users",
+          singular: "/user",
+        },
+      },
+    },
+  },
   ROUTES: {
     HOME: "/",
     LOGIN: "/login",
@@ -67,11 +89,8 @@ const config: AppConfig = {
           password: Yup.string()
             .required("Password is required")
             .min(8, "Password must be at least 8 characters"),
-          confirmPassword: Yup.string()
-            .oneOf([Yup.ref("password")], "Passwords must match")
-            .required("Confirm Password is required"),
         }),
-        initValues: { email: "", password: "", confirmPassword: "" },
+        initValues: { email: "", password: "" },
       },
       REGISTER: {
         constrains: Yup.object({

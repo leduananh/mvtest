@@ -1,8 +1,7 @@
-import React, { useCallback, useMemo } from "react";
-import { Button, TextField } from "@mui/material";
+import React, { useCallback, useEffect, useMemo } from "react";
+import { Button, TextField, Typography } from "@mui/material";
 import { Field, FormikValues, FormikProps } from "formik";
-import * as Yup from "yup";
-import { useNavigateLink } from "../../shared/hooks";
+import { AlertType, useAlert, useNavigateLink } from "../../shared/hooks";
 import { ShareVideosBtn } from "../videos";
 import config from "../../app/config";
 import { useLocation } from "react-router-dom";
@@ -12,6 +11,11 @@ import {
   FormFieldRenderFunction,
 } from "../../shared/components/FormBase";
 import _ from "lodash";
+import { useDispatch, useSelector } from "react-redux";
+import { selectAuthState } from "./authSelector";
+import useLogin from "./useLogin";
+import LoginForm from "./loginForm";
+import { LoggedUserInfo, loginAction } from ".";
 
 interface HeaderLoginForm extends FormBaseFields {
   email: string;
@@ -19,22 +23,15 @@ interface HeaderLoginForm extends FormBaseFields {
 }
 
 const HeaderLoginForm: React.FC<{}> = () => {
+  const { apiError, sendLoginRequest, LoginResponseToLoginActionPayLoadFn, loginResponse } = useLogin()
+  const dispatch = useDispatch();
   const navigate = useNavigateLink();
   const location = useLocation();
+  const { showAlert } = useAlert()
+  const { isLoggedIn, userInfo } = useSelector(selectAuthState)
 
   const createJsxCb: FormFieldRenderFunction = useCallback(
     (formikState: FormikProps<FormikValues>) => {
-      const shareVideosBtn = useMemo(() => <ShareVideosBtn />, []);
-
-      const loginBtn = useMemo(
-        () => (
-          <Button variant="contained" type="submit">
-            {"Login"}
-          </Button>
-        ),
-        [formikState],
-      );
-
       const emailField = useMemo(
         () => (
           <Field
@@ -50,25 +47,12 @@ const HeaderLoginForm: React.FC<{}> = () => {
             style={{
               margin: "auto",
             }}
-            error={!_.isEmpty(formikState.errors.email)}
+            error={!_.isEmpty(formikState.errors.email) && Boolean(formikState.touched.password)}
           />
         ),
-        [formikState],
+        [formikState, isLoggedIn],
       );
 
-      const signUpBtn = useMemo(
-        () => (
-          <Button
-            variant="contained"
-            onClick={() => {
-              navigate(config.ROUTES.REGISTER);
-            }}
-          >
-            {"Sign Up"}
-          </Button>
-        ),
-        [formikState],
-      );
       const passwordField = useMemo(
         () => (
           <Field
@@ -84,11 +68,43 @@ const HeaderLoginForm: React.FC<{}> = () => {
             style={{
               margin: "auto",
             }}
-            error={!_.isEmpty(formikState.errors.password)}
+            error={!_.isEmpty(formikState.errors.password) && Boolean(formikState.touched.password)}
           />
         ),
-        [],
+        [formikState, isLoggedIn],
       );
+
+      const loginBtn = useMemo(
+        () => (
+          <Button variant="contained" type="submit">
+            {"Login"}
+          </Button>
+        ),
+        [isLoggedIn],
+      );
+
+      const signUpBtn = useMemo(
+        () => (
+          <Button
+            variant="contained"
+            onClick={() => {
+              navigate(config.ROUTES.REGISTER);
+            }}
+          >
+            {"Sign Up"}
+          </Button>
+        ),
+        [formikState, isLoggedIn],
+      );
+
+      const shareVideosBtn = useMemo(() => <ShareVideosBtn />, [isLoggedIn]);
+
+      const loggedUserEmailText = useMemo(() => {
+        return (<Typography variant="body1" component="div" sx={{ marginLeft: 'auto' }}>
+          {`Welcome ${userInfo?.email}`}
+        </Typography>)
+      }, [isLoggedIn])
+
       const isLoginPage = location.pathname === config.ROUTES.LOGIN;
       const isSignUpPage = location.pathname === config.ROUTES.REGISTER;
       const fields = Object.keys(formikState.values);
@@ -98,27 +114,50 @@ const HeaderLoginForm: React.FC<{}> = () => {
 
       return (
         <>
-          {emailField}
-          {passwordField}
-          {shareVideosBtn}
+          {!isLoggedIn && !isLoginPage && emailField}
 
-          {isLoginPage && !isSignUpPage && signUpBtn}
+          {!isLoggedIn && !isLoginPage && passwordField}
 
-          {isSignUpPage && !isLoginPage && loginBtn}
+          {isLoggedIn && loggedUserEmailText}
 
-          {!isSignUpPage && !isLoginPage && !isAllFieldFullFill
+          {isLoggedIn && shareVideosBtn}
+
+          {!isLoggedIn && isLoginPage && !isSignUpPage && signUpBtn}
+
+          {!isLoggedIn && isSignUpPage && !isLoginPage && loginBtn}
+
+          {!isLoggedIn && !isSignUpPage && !isLoginPage && !isAllFieldFullFill
             ? signUpBtn
-            : !isSignUpPage && !isLoginPage && isAllFieldFullFill && loginBtn}
+            : !isLoggedIn && !isSignUpPage && !isLoginPage && isAllFieldFullFill && loginBtn}
         </>
       );
     },
     [location],
   );
 
-  const onSubmit = useCallback(async () => {
-    // TODO update call api
-    console.log("asdasdasdasd");
+  const onSubmit = useCallback(async (payload: LoginForm) => {
+    await sendLoginRequest(payload);
   }, []);
+
+  useEffect(() => {
+    if (!_.isNull(apiError)) {
+      showAlert(apiError.message, { type: AlertType.Error });
+    }
+  }, [apiError]);
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      navigate(config.ROUTES.HOME)
+    }
+  }, [isLoggedIn]);
+
+  useEffect(() => {
+    if (!_.isNil(loginResponse)) {
+      const loginActionPayload: LoggedUserInfo = LoginResponseToLoginActionPayLoadFn(loginResponse)
+      showAlert('Login success')
+      dispatch(loginAction(loginActionPayload));
+    }
+  }, [loginResponse]);
 
   return (
     <FormBase

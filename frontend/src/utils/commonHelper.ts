@@ -20,6 +20,14 @@ const wsInfoLog = (message: string): void => {
   logInfo(message, LogPrefix.WebSocket);
 };
 
+const apiErrorLog = (message: string): void => {
+  logError(message, LogPrefix.Api);
+};
+
+const apiInfoLog = (message: string): void => {
+  logInfo(message, LogPrefix.Api);
+};
+
 const wsErrorLog = (message: string): void => {
   logError(message, LogPrefix.WebSocket);
 };
@@ -36,5 +44,7 @@ export const commonHelper = {
   checkEnvVariableExist,
   wsErrorLog,
   wsInfoLog,
-  reduxInfoLog,
+  apiErrorLog,
+  apiInfoLog,
+  reduxInfoLog
 };

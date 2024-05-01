@@ -5,8 +5,9 @@ import * as Yup from "yup";
 import _ from "lodash";
 import { AlertType, useAlert, useFormikSubmit } from "../../hooks";
 import { OverLayLoading } from "../OverLayLoading";
+import { LoginForm } from "../../../features/authentication";
 
-export interface FormBaseFields {}
+export type FormBaseFields = LoginForm;
 
 export type FormFieldRenderFunction = (
   formikState: FormikProps<FormikValues>,

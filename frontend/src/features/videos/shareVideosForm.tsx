@@ -23,7 +23,7 @@ const VideoShareForm: React.FC = () => {
           <Field
             as={TextField}
             variant="outlined"
-            label="Share Videos"
+            label="Share Videos Url"
             name="email"
             fullWidth
             required
@@ -73,7 +73,9 @@ const VideoShareForm: React.FC = () => {
         }}
       >
         <Typography variant="h6" sx={{ alignSelf: "flex-start", mb: 2 }}>
-          Youtube shareable url
+          <b>
+            Youtube Share Videos
+          </b>
         </Typography>
         <FormBase
           style={{ width: "100%" }}
@@ -82,10 +84,6 @@ const VideoShareForm: React.FC = () => {
           validationSchema={config.RULES.FORM.VIDEO_SHARE.constrains}
           createFormJsxFieldCb={createJsxCb}
         />
-        {/* <TextField label="Share Videos" variant="outlined" fullWidth sx={{ mb: 2 }} />
-        <Button variant="contained" fullWidth>
-          Share
-        </Button> */}
       </Box>
     </Container>
   );

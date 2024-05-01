@@ -45,6 +45,11 @@ export interface AppConfig {
       };
     };
   };
+  LOCAL_STORAGE: {
+    AUTH_TOKEN: {
+      KEY: string
+    }
+  }
 }
 
 const config: AppConfig = {
@@ -106,10 +111,15 @@ const config: AppConfig = {
       },
       VIDEO_SHARE: {
         constrains: Yup.object({
-          youtubeUrl: Yup.string().required("Required").url("youtube link"),
+          youtubeUrl: Yup.string().required("Required").url("youtube link")
         }),
         initValues: { youtubeUrl: "" },
       },
+    },
+  },
+  LOCAL_STORAGE: {
+    AUTH_TOKEN: {
+      KEY: "rft",
     },
   },
 };

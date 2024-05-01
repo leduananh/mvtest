@@ -44,9 +44,24 @@ class AuthService {
         data: { accessToken, refreshToken, user },
       } = await this.#client.post(
         `${this.#resourcePathPluralName}/sign_in`,
-        JSON.stringify({ user: payload }),
+        JSON.stringify({user:payload}),
       );
       return { accessToken, refreshToken, user };
+    } catch (err: AxiosError | any) {
+      const apiError: ApiError = apiHelper.handleAxiosApiError(err);
+      commonHelper.apiErrorLog(`status: ${apiError.statusCode}, msg: ${err.message}`)
+      throw apiError;
+    }
+  }
+
+  async getUserProfile(accessToken: string): Promise<User> {
+    try {
+      const {
+        data: { email, id },
+      } = await this.#client.get(
+        `${this.#resourcePathSingularName}/user/profile`
+      );
+      return { email, id };
     } catch (err: AxiosError | any) {
       const apiError: ApiError = apiHelper.handleAxiosApiError(err);
       commonHelper.apiErrorLog(`status: ${apiError.statusCode}, msg: ${err.message}`)

@@ -2,7 +2,6 @@ import { useCallback, useState } from "react";
 import { LoginResponse, authService } from "../../services/auth";
 import LoginForm from "./loginForm";
 import { ApiError } from "../../shared/error";
-import { LoggedUserInfo } from "./types";
 
 export enum AlertType {
   Success = "success",
@@ -12,13 +11,11 @@ export enum AlertType {
 }
 
 type SendLoginRqFn = (rqPayLoad: LoginForm) => Promise<void>;
-type ToLoginActionPayLoadFn = (loginResponse: LoginResponse) => LoggedUserInfo;
 
 interface UseLogin {
   sendLoginRequest: SendLoginRqFn;
   apiError: ApiError;
   loginResponse: LoginResponse;
-  LoginResponseToLoginActionPayLoadFn: ToLoginActionPayLoadFn;
 }
 
 const useLogin = (): UseLogin => {
@@ -33,15 +30,7 @@ const useLogin = (): UseLogin => {
     }
   }, []);
 
-  const LoginResponseToLoginActionPayLoadFn : ToLoginActionPayLoadFn = useCallback((loginResponse: LoginResponse): LoggedUserInfo => {
-    return {
-      accessToken: loginResponse.accessToken,
-      email: loginResponse.user.email,
-      id: loginResponse.user.id,
-    };
-  }, []);
-
-  return { sendLoginRequest, apiError, loginResponse, LoginResponseToLoginActionPayLoadFn };
+  return { sendLoginRequest, apiError, loginResponse };
 };
 
 export default useLogin;

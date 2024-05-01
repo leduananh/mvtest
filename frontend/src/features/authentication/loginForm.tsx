@@ -7,7 +7,7 @@ import { FormBase, FormFieldRenderFunction } from "../../shared/components/FormB
 import config from "../../app/config";
 import useLogin from "./useLogin";
 import { useDispatch, useSelector } from "react-redux";
-import { LoggedUserInfo, loginAction, selectAuthState } from ".";
+import { loginAction, selectAuthState } from ".";
 import _ from "lodash";
 
 interface LoginForm {
@@ -17,11 +17,11 @@ interface LoginForm {
 
 const LoginForm: React.FC<{}> = () => {
   const dispatch = useDispatch();
-  const { sendLoginRequest, apiError, loginResponse, LoginResponseToLoginActionPayLoadFn } = useLogin();
+  const { sendLoginRequest, apiError, loginResponse } = useLogin();
   const { showAlert } = useAlert();
   const { isLoggedIn } = useSelector(selectAuthState)
   const navigate = useNavigateLink()
-  
+
   const createJsxCb: FormFieldRenderFunction = useCallback(
     (formikState: FormikProps<FormikValues>) => {
       const emailField = useMemo(
@@ -104,9 +104,8 @@ const LoginForm: React.FC<{}> = () => {
 
   useEffect(() => {
     if (!_.isNil(loginResponse)) {
-      const loginActionPayload: LoggedUserInfo = LoginResponseToLoginActionPayLoadFn(loginResponse)
+      dispatch(loginAction(loginResponse));
       showAlert('Login success')
-      dispatch(loginAction(loginActionPayload));
     }
   }, [loginResponse]);
 

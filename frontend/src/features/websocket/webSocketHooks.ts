@@ -21,7 +21,7 @@ function useWebSocketWithAuth() {
         });
       };
     }
-  }, [isLoggedIn, dispatch]);
+  }, [isLoggedIn]);
 }
 
 export default useWebSocketWithAuth;

@@ -83,7 +83,7 @@ const LoginForm: React.FC<{}> = () => {
         </>
       );
     },
-    [],
+    [isLoggedIn],
   );
 
   const onSubmit = useCallback(async (payload: LoginForm) => {

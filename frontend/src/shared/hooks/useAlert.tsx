@@ -28,11 +28,12 @@ const useAlert = (): Alert => {
     msg,
     options = { type: AlertType.Success, autoHideDuration: 1500, isIncludeCloseBtn: true },
   ) => {
+    const mergedOptions = { ...{ type: AlertType.Success, autoHideDuration: 1500, isIncludeCloseBtn: true }, ...options };
     const snackBarOpt: OptionsWithExtraProps<AlertType> = {
-      variant: options.type,
-      autoHideDuration: options.autoHideDuration,
+      variant: mergedOptions.type,
+      autoHideDuration: mergedOptions.autoHideDuration,
     };
-    if (options.isIncludeCloseBtn) {
+    if (mergedOptions.isIncludeCloseBtn) {
       snackBarOpt.action = (key) => {
         return (
           <IconButton
@@ -48,7 +49,8 @@ const useAlert = (): Alert => {
       };
     }
     snackBar.enqueueSnackbar(msg, snackBarOpt);
-  };
+};
+
 
   return { showAlert };
 };

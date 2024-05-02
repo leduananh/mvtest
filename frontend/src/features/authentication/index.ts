@@ -3,6 +3,8 @@ import authReducer, { login, logout } from "./authSlice";
 import HeaderLoginForm from "./headerLoginForm.tsx";
 import LoginForm from "./loginForm.tsx";
 import SignUpForm from "./signUpForm.tsx";
+import useLogOut from "./useLogOut.ts";
+import useRenewLoginSession from "./useRenewLoginSession.ts";
 
 export * from "./types.ts";
 export {
@@ -12,6 +14,8 @@ export {
   LoginForm,
   SignUpForm,
   HeaderLoginForm,
+  useRenewLoginSession,
+  useLogOut,
   selectAuthState,
   selectUserInfo,
   selectIsLoggedIn

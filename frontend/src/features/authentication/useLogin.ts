@@ -14,13 +14,13 @@ type SendLoginRqFn = (rqPayLoad: LoginForm) => Promise<void>;
 
 interface UseLogin {
   sendLoginRequest: SendLoginRqFn;
-  apiError: ApiError;
-  loginResponse: LoginResponse;
+  apiError: ApiError | null;
+  loginResponse: LoginResponse | null;
 }
 
 const useLogin = (): UseLogin => {
-  const [apiError, setApiError] = useState<ApiError | any>(null);
-  const [loginResponse, setLoginResponse] = useState<LoginResponse | any>(null);
+  const [apiError, setApiError] = useState<ApiError | null>(null);
+  const [loginResponse, setLoginResponse] = useState<LoginResponse | null>(null);
 
   const sendLoginRequest: SendLoginRqFn = useCallback(async (rqPayLoad: LoginForm): Promise<void> => {
     try {

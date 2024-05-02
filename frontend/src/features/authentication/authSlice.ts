@@ -27,7 +27,8 @@ export const authSlice = createSlice({
     },
     logout: (state: AuthState) => {
       commonHelper.reduxInfoLog("Setting auth logout state");
-      state = authInitialState;
+      state.isLoggedIn = authInitialState.isLoggedIn;
+      state.userInfo = authInitialState.userInfo
       localStorage.removeItem(config.LOCAL_STORAGE.AUTH_TOKEN.KEY)
       commonHelper.reduxInfoLog("Setted auth logout state");
     },

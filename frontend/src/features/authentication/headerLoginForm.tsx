@@ -15,7 +15,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { selectAuthState } from "./authSelector";
 import useLogin from "./useLogin";
 import LoginForm from "./loginForm";
-import { LoggedUserInfo, loginAction } from ".";
+import { loginAction, useLogOut } from ".";
+import { OverLayLoading } from "../../shared/components/OverLayLoading";
 
 interface HeaderLoginForm extends FormBaseFields {
   email: string;
@@ -23,7 +24,8 @@ interface HeaderLoginForm extends FormBaseFields {
 }
 
 const HeaderLoginForm: React.FC<{}> = () => {
-  const { apiError, sendLoginRequest, LoginResponseToLoginActionPayLoadFn, loginResponse } = useLogin()
+  const { apiError: loginError, sendLoginRequest, loginResponse } = useLogin()
+  const { isLoading: logoutIsLoading, sendLogOut, apiError: logoutError } = useLogOut()
   const dispatch = useDispatch();
   const navigate = useNavigateLink();
   const location = useLocation();
@@ -83,18 +85,30 @@ const HeaderLoginForm: React.FC<{}> = () => {
         [isLoggedIn],
       );
 
+      const logoutBtn = useMemo(
+        () => (
+          <Button variant="contained" onClick={() => {
+            sendLogOut()
+          }}>
+            {"Logout"}
+          </Button>
+        ),
+        [isLoggedIn],
+      );
+
       const signUpBtn = useMemo(
         () => (
           <Button
             variant="contained"
+            style={{ textWrap: 'nowrap', paddingLeft: 10, paddingRight: 10, paddingBottom: 10, paddingTop: 10 }}
             onClick={() => {
               navigate(config.ROUTES.REGISTER);
             }}
           >
-            {"Sign Up"}
-          </Button>
+            {"SignUp"}
+          </Button >
         ),
-        [formikState, isLoggedIn],
+        [isLoggedIn],
       );
 
       const shareVideosBtn = useMemo(() => <ShareVideosBtn />, [isLoggedIn]);
@@ -126,13 +140,15 @@ const HeaderLoginForm: React.FC<{}> = () => {
 
           {!isLoggedIn && isSignUpPage && !isLoginPage && loginBtn}
 
+          {isLoggedIn && logoutBtn}
+
           {!isLoggedIn && !isSignUpPage && !isLoginPage && !isAllFieldFullFill
             ? signUpBtn
             : !isLoggedIn && !isSignUpPage && !isLoginPage && isAllFieldFullFill && loginBtn}
         </>
       );
     },
-    [location],
+    [isLoggedIn, location],
   );
 
   const onSubmit = useCallback(async (payload: LoginForm) => {
@@ -140,10 +156,16 @@ const HeaderLoginForm: React.FC<{}> = () => {
   }, []);
 
   useEffect(() => {
-    if (!_.isNull(apiError)) {
-      showAlert(apiError.message, { type: AlertType.Error });
+    if (!_.isNull(loginError)) {
+      showAlert(loginError.message, { type: AlertType.Error });
     }
-  }, [apiError]);
+  }, [loginError]);
+
+  useEffect(() => {
+    if (!_.isNull(logoutError)) {
+      showAlert(logoutError.message, { type: AlertType.Error });
+    }
+  }, [logoutError]);
 
   useEffect(() => {
     if (isLoggedIn) {
@@ -153,20 +175,23 @@ const HeaderLoginForm: React.FC<{}> = () => {
 
   useEffect(() => {
     if (!_.isNil(loginResponse)) {
-      const loginActionPayload: LoggedUserInfo = LoginResponseToLoginActionPayLoadFn(loginResponse)
       showAlert('Login success')
-      dispatch(loginAction(loginActionPayload));
+      dispatch(loginAction(loginResponse));
     }
   }, [loginResponse]);
 
   return (
-    <FormBase
-      createFormJsxFieldCb={createJsxCb}
-      initialFieldValues={config.RULES.FORM.HEADER_LOGIN.initValues}
-      validationSchema={config.RULES.FORM.HEADER_LOGIN.constrains}
-      onSubmit={onSubmit}
-      style={{ display: "flex", gap: 10, alignItems: "center" }}
-    />
+    <>
+      <OverLayLoading open={logoutIsLoading} options={{ isBlackOut: true, showText: { text: "logging out", isBold: true } }} />
+
+      <FormBase
+        createFormJsxFieldCb={createJsxCb}
+        initialFieldValues={config.RULES.FORM.HEADER_LOGIN.initValues}
+        validationSchema={config.RULES.FORM.HEADER_LOGIN.constrains}
+        onSubmit={onSubmit}
+        style={{ display: "flex", gap: 10, alignItems: "center" }}
+      />
+    </>
   );
 };
 

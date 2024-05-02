@@ -14,6 +14,12 @@ export interface AppConfig {
           singular: string;
         };
       };
+      VIDEO: {
+        PATH: {
+          plural: string;
+          singular: string;
+        };
+      };
     };
   };
   ROUTES: {
@@ -49,6 +55,11 @@ export interface AppConfig {
     AUTH_TOKEN: {
       KEY: string
     }
+  },
+  COMMON: {
+    PAGINATE: {
+      per_page: number
+    }
   }
 }
 
@@ -63,6 +74,12 @@ const config: AppConfig = {
           singular: "/user",
         },
       },
+      VIDEO: {
+        PATH: {
+          plural: "/videos",
+          singular: "/video",
+        },
+      }
     },
   },
   ROUTES: {
@@ -122,6 +139,11 @@ const config: AppConfig = {
       KEY: "rft",
     },
   },
+  COMMON: {
+    PAGINATE: {
+      per_page: 10
+    }
+  }
 };
 
 export default config;

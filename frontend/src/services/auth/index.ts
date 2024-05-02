@@ -1,4 +1,4 @@
-import { authService, LoginResponse, User } from "./authService";
+import { authService, LoginResponse, User, RenewAccessTokenResponse, RenewAccessTokenRequest } from "./authService";
 
 export { authService };
-export type { LoginResponse, User };
+export type { LoginResponse, User, RenewAccessTokenResponse, RenewAccessTokenRequest};

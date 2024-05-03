@@ -1,11 +1,11 @@
 import _ from "lodash";
-import { AxiosError, AxiosInstance } from "axios";
-import apiClient from "../../app/client";
+import { AxiosError } from "axios";
 import { LoginForm } from "../../features/authentication";
 import config from "../../app/config";
 import { commonHelper } from "../../utils/commonHelper";
 import { apiHelper } from "../../utils/apiHelper";
 import { ApiError } from "../../shared/error";
+import ApiClient from "../../app/client";
 
 /**
  * RenewAccessTokenResponse
@@ -39,16 +39,13 @@ export interface User {
 }
 
 class AuthService {
-  #client: AxiosInstance;
   #resourcePathPluralName: string;
   #resourcePathSingularName: string;
 
   constructor(
-    client: AxiosInstance,
     resourcePathPluralName: string,
     resourcePathSingularName: string,
   ) {
-    this.#client = client;
     this.#resourcePathPluralName = resourcePathPluralName;
     this.#resourcePathSingularName = resourcePathSingularName;
   }
@@ -57,7 +54,7 @@ class AuthService {
     try {
       const {
         data: { accessToken, refreshToken, user },
-      } = await this.#client.post(
+      } = await ApiClient.getInstance().post(
         `${this.#resourcePathPluralName}/sign_in`,
         JSON.stringify({ user: payload }),
       );
@@ -71,7 +68,7 @@ class AuthService {
     try {
       const {
         data: { email, id },
-      } = await this.#client.get(
+      } = await ApiClient.getInstance().get(
         `${this.#resourcePathSingularName}/profile`,
         { headers: { 'Authorization': 'Bearer ' + accessToken } }
       );
@@ -89,7 +86,7 @@ class AuthService {
 
       const {
         data: { access_token, expires_in, token_type },
-      } = await this.#client.post(
+      } = await ApiClient.getInstance().post(
         `/auth/token/renew`, JSON.stringify(rqPayLoad)
       );
 
@@ -101,7 +98,7 @@ class AuthService {
 
   async logout(): Promise<void> {
     try {
-      await this.#client.post(
+      await ApiClient.getInstance().post(
         `${this.#resourcePathPluralName}/sign_out`
       );
     } catch (err: AxiosError | any) {
@@ -117,7 +114,6 @@ class AuthService {
 }
 
 export const authService = new AuthService(
-  apiClient,
   config.CLIENT.RESOURCE.USER.PATH.plural,
   config.CLIENT.RESOURCE.USER.PATH.singular,
 );

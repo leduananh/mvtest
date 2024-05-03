@@ -11,10 +11,10 @@ export const VideoItemList: React.FC<{}> = () => {
   const { apiError, isLoading, paginateVideo, setVideoPage } = usePaginateVideos()
   const { showAlert } = useAlert()
   
-  const isShowVideos = !_.isNil(apiError) && paginateVideo?.data && !_.isEmpty(paginateVideo?.data)
+  const isShowVideos = _.isNil(apiError) && paginateVideo?.data && !_.isEmpty(paginateVideo?.data)
   
   useEffect(() => {
-    setVideoPage({ page: 1, perPage: config.COMMON.PAGINATE.per_page })
+    setVideoPage({ page: 1, per_page: config.COMMON.PAGINATE.per_page })
   }, [])
 
   useEffect(() => {
@@ -38,7 +38,7 @@ export const VideoItemList: React.FC<{}> = () => {
       )
     })}
 
-    {isShowVideos && <Pagination count={paginateVideo?.meta?.total_count} size="medium" />}
+    {isShowVideos && <Pagination count={paginateVideo?.meta?.total_pages} />}
 
   </>);
 };

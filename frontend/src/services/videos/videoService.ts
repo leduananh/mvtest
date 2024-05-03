@@ -1,14 +1,14 @@
 import _ from "lodash";
-import { AxiosError, AxiosInstance } from "axios";
-import apiClient from "../../app/client";
+import { AxiosError } from "axios";
 import config from "../../app/config";
 import { commonHelper } from "../../utils/commonHelper";
 import { apiHelper } from "../../utils/apiHelper";
 import { ApiError } from "../../shared/error";
+import ApiClient from "../../app/client";
 
 export interface PaginateVideosRequestParams {
     page: number;
-    perPage: number;
+    per_page: number;
 }
 
 export interface PaginateVideosResponse {
@@ -42,25 +42,23 @@ export interface PaginateMeta {
 }
 
 class VideoService {
-    #client: AxiosInstance;
     #resourcePathPluralName: string;
     #resourcePathSingularName: string;
 
     constructor(
-        client: AxiosInstance,
         resourcePathPluralName: string,
         resourcePathSingularName: string,
     ) {
-        this.#client = client;
         this.#resourcePathPluralName = resourcePathPluralName;
         this.#resourcePathSingularName = resourcePathSingularName;
     }
 
     async getVideosPaginate(reqParams: PaginateVideosRequestParams): Promise<PaginateVideosResponse> {
         try {
-            return await this.#client.get(
+            const { data } = await ApiClient.getInstance().get(
                 `${this.#resourcePathPluralName}`,
                 { params: reqParams });
+            return data
         } catch (err: AxiosError | any) {
             throw this.#handleAxiosError(err)
         }
@@ -74,7 +72,6 @@ class VideoService {
 }
 
 export const videoService = new VideoService(
-    apiClient,
     config.CLIENT.RESOURCE.VIDEO.PATH.plural,
     config.CLIENT.RESOURCE.VIDEO.PATH.singular,
 );

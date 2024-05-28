@@ -25,7 +25,7 @@ class VideoSharingService
 
     if data['items'].any?
       video_details = {
-        videoId: video_id,
+        video_id: video_id,
         description: data['items'][0]['snippet']['description'],
         title: data['items'][0]['snippet']['title']
       }

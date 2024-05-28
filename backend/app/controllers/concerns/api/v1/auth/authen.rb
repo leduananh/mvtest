@@ -14,16 +14,34 @@ module Api
       end
 
       def authenticate_request!
-        unless valid_token?
-          raise Errors::UnAuthorizedError.new
+        token = extract_token_from_header
+
+        unless token.present?
+          raise Errors::UnAuthorizedError.new('missing authorize header')
+        end
+
+        claims = JwtService.decode(token)
+
+        finger_print = @rq_device_info[:existing_device][:finger_print]
+
+        unless finger_print.present?
+          raise Errors::UnAuthorizedError.new('request with authorize header w  as send from unknown device')
+        end
+
+        @current_user = User.find_by(id: claims[:user_id])
+
+        user_token = @current_user.find_auth_token_by_jti_and_fingerprint(claims[:jti], finger_print)
+
+        unless user_token.present?
+          raise Errors::UnAuthorizedError.new("authorize token belong to different device, please sign in again on this device")
         end
       end
 
-      def valid_token?
-        token = extract_token_from_header
-
-        token.present?
-      end
+      # def valid_token?
+      #   token = extract_token_from_header
+      #
+      #   token.present?
+      # end
 
       def extract_token_from_header
         header = request.headers['Authorization']

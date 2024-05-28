@@ -37,7 +37,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_28_121024) do
 
   create_table "shared_videos", force: :cascade do |t|
     t.integer "user_id", null: false
-    t.string "videoId"
+    t.string "video_id"
     t.string "title"
     t.string "description"
     t.datetime "created_at", null: false

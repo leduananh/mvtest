@@ -10,6 +10,10 @@ class AuthToken < ApplicationRecord
 
   validates :token_type, inclusion: { in: %w(ACCESS REFRESH) }
 
+  scope :by_jti_and_fingerprint, ->(jti, fingerprint) {
+    joins(:device).where(jti: jti, devices: { fingerprint: fingerprint })
+  }
+
   def self.upsert_tokens_by_user_and_device(user_id, device_id)
     auth_tokens = where(user_id: user_id, device_id: device_id)
     access_token = nil

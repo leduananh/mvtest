@@ -11,9 +11,9 @@ Rails.application.routes.draw do
       }
 
       resources :registrations, only: [:create, :new]
-      resources :sessions, only: [:new]
+      resources :sessions, only: [:new, :destroy]
       resources :notifications
-      resources :shared_videos
+      resources :shared_videos, only: [:create, :index]
     end
   end
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
